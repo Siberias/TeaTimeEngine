@@ -4,6 +4,8 @@ int main()
 {
     Application application = Application();
 
+	application.Setup();
+
     while (application.IsWindowOpen())
     {
         application.ProcessEvents();
