@@ -1,5 +1,7 @@
 #include "Services/FontService.h"
 
+#include <filesystem>
+
 #include <plog/Log.h>
 
 FontService::FontService()
@@ -13,6 +15,13 @@ FontService::~FontService()
 void FontService::LoadFonts()
 {
 	std::string fontsDirectory = "Assets/Fonts";
+
+	if (!std::filesystem::exists(fontsDirectory))
+	{
+		PLOG_WARNING << "Fonts directory does not exist: " << fontsDirectory << ". Fonts will not be loaded";
+		return;
+	}
+
 	for (const auto& entry : std::filesystem::directory_iterator(fontsDirectory))
 	{
 		if (entry.is_regular_file())

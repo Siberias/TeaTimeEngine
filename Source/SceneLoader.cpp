@@ -23,28 +23,14 @@ SceneLoader::~SceneLoader()
 
 std::shared_ptr<Scene> SceneLoader::LoadScene(const std::string& scenePath)
 {
-	std::ifstream fileStream;
+	if (!std::filesystem::exists(scenePath))
+	{
+		throw std::runtime_error("Scene file does not exist: " + scenePath);
+	}
 
-	try
-	{
-		fileStream = std::ifstream(scenePath);
-	}
-	catch (const std::exception& e)
-	{
-		return nullptr;
-	}
+	std::ifstream fileStream = std::ifstream(scenePath);
+	Json sceneJson = Json::parse(fileStream);
 	
-	Json sceneJson;
-
-	try
-	{
-		sceneJson = Json::parse(fileStream);
-	}
-	catch (const std::exception& e)
-	{
-		return nullptr;
-	}
-
 	std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 	for (Json::iterator it = sceneJson.begin(); it != sceneJson.end(); ++it)
 	{

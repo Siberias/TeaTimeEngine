@@ -28,6 +28,13 @@ ParticleEffectService::~ParticleEffectService()
 void ParticleEffectService::LoadParticleEffects()
 {
 	std::string particleEffectsDirectory = "Assets/ParticleEffects";
+	if (!std::filesystem::exists(particleEffectsDirectory))
+	{
+		PLOG_WARNING << "Fonts directory does not exist: " << 
+			particleEffectsDirectory << ". ParticleEffects will not be loaded";
+		return;
+	}
+
 	for (const auto& entry : std::filesystem::directory_iterator(particleEffectsDirectory))
 	{
 		if (entry.is_regular_file())

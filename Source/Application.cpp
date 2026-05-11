@@ -40,9 +40,10 @@ void Application::ProcessEvents()
 void Application::Setup()
 {
 	SceneLoader sceneLoader;
-	std::shared_ptr<Scene> scene = sceneLoader.
-        LoadScene("Assets/Scenes/Sandbox.json");
-	_scenes.push_back(scene);
+	//TODO: Load startup scene from config file
+	/*std::shared_ptr<Scene> scene = sceneLoader.
+        LoadScene("Assets/Scenes/StartupScene.json");
+	_scenes.push_back(scene);*/
 
 	_serviceLocator = std::make_shared<ServiceLocator>();
 
