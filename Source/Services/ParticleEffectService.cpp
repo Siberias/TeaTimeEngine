@@ -74,27 +74,14 @@ IParticleEffectPtr ParticleEffectService::InstantiateEffect(const std::string&
 void ParticleEffectService::LoadParticleEffect(
 	const std::string& particleEffectPath)
 {
-	std::ifstream fileStream;
-
-	try
+	if (!std::filesystem::exists(particleEffectPath))
 	{
-		fileStream = std::ifstream(particleEffectPath);
-	}
-	catch (const std::exception& e)
-	{
-		return;
+		throw std::runtime_error("Particle effect file does not exist: " 
+			+ particleEffectPath);
 	}
 
-	Json particleEffectJson;
-
-	try
-	{
-		particleEffectJson = Json::parse(fileStream);
-	}
-	catch (const std::exception& e)
-	{
-		return;
-	}
+	std::ifstream fileStream = std::ifstream(particleEffectPath);
+	Json particleEffectJson = Json::parse(fileStream);
 
 	std::string className = particleEffectJson["class"];
 
