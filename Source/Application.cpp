@@ -1,18 +1,26 @@
 #include "Application.h"
 
-#include <cassert>
+#include <stdexcept>
 
-#include "GameEntity.h"
-#include "Sandbox.h"
+#include "IGameEntity.h"
+#include "SceneLoader.h"
+#include "Services/FontService.h"
+#include "Services/ParticleEffectService.h"
 
 Application* Application::_instance = nullptr;
 
 Application::Application() :
-	_window(sf::VideoMode({ 800, 600 }), "SFML3Template")
+    _window(sf::VideoMode({ 800, 600 }), "SFML3Game")
 {
-	_instance = this;
+    if (_instance != nullptr)
+    {
+        throw std::runtime_error("Application is a singleton and an instance"
+            " already exists");
+    }
 
-	_window.setVerticalSyncEnabled(true);
+    _instance = this;
+
+    _window.setVerticalSyncEnabled(true);
     _window.setKeyRepeatEnabled(false);
 }
 
@@ -31,18 +39,30 @@ void Application::ProcessEvents()
 
 void Application::Setup()
 {
+	SceneLoader sceneLoader;
+	std::shared_ptr<Scene> scene = sceneLoader.
+        LoadScene("Assets/Scenes/Sandbox.json");
+	_scenes.push_back(scene);
+
+	_serviceLocator = std::make_shared<ServiceLocator>();
+
+	auto fontService = std::make_shared<FontService>();
+	_serviceLocator->RegisterService<IFontService>(fontService);
+	fontService->LoadFonts();
+
+	auto particleEffectService = std::make_shared<ParticleEffectService>();
+	_serviceLocator->RegisterService<IParticleEffectService>
+        (particleEffectService);
+    particleEffectService->LoadParticleEffects();
 }
 
 void Application::Update()
 {
 	float dt = _clock.restart().asSeconds();
 
-    for (auto& gameEntity : _gameEntities)
+    for (auto& scene : _scenes)
     {
-        if (auto& entity = gameEntity)
-        {
-            entity->Update(dt);
-        }
+        scene->Update(dt);
 	}
 }
 
@@ -50,27 +70,21 @@ void Application::Render()
 {
     _window.clear();
 
-	for (auto& gameEntity : _gameEntities)
+	for (auto& scene : _scenes)
     {
-        if (auto& entity = gameEntity)
-        {
-            entity->Render(_window);
-        }
+		scene->Render(_window);
     }
 
     _window.display();
 }
 
-void Application::AddGameEntity(std::shared_ptr<GameEntity> gameEntity)
+void Application::Destroy()
 {
-    _gameEntities.push_back(gameEntity);
-    gameEntity->Setup();
-}
-
-void Application::RemoveGameEntity(std::shared_ptr<GameEntity> gameEntity)
-{ 
-    _gameEntities.erase(std::remove(_gameEntities.begin(), _gameEntities.end(), 
-        gameEntity), _gameEntities.end());
+    for (auto& scene : _scenes)
+    {
+        scene->Destroy();
+    }
+    _scenes.clear();
 }
 
 #pragma region System Event Handling

@@ -12,4 +12,6 @@ int main()
         application.Update();
         application.Render();
     }
+
+	application.Destroy();
 }

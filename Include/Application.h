@@ -1,5 +1,5 @@
 // Application.h
-// Wraps an SFML window, provides core game engine functions and reads system events
+// Wraps an SFML window and provides core game engine functions
 #pragma once
 
 #include <memory>
@@ -7,7 +7,9 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "GameEntity.h"
+#include "IGameEntity.h"
+#include "Services/ServiceLocator.h"
+#include "Scene.h"
 
 class Application
 {
@@ -17,11 +19,13 @@ private:
 	sf::Clock _clock;
 	sf::RenderWindow _window;
 
-	//TODO: Move entity management into a Scene
-	std::vector<std::shared_ptr<GameEntity>> _gameEntities;
+	std::shared_ptr<ServiceLocator> _serviceLocator;
+
+	std::vector<std::shared_ptr<Scene>> _scenes;
 
 public:
 	Application();
+	~Application() { _instance = nullptr; }
 
 	static Application* GetInstance()
 	{
@@ -36,10 +40,10 @@ public:
 	void Setup();
 	void Update();
 	void Render();
+	void Destroy();
 
-	//TODO: Move entity management into a Scene
-	void AddGameEntity(std::shared_ptr<GameEntity> entity);
-	void RemoveGameEntity(std::shared_ptr<GameEntity> entity);
+	const std::vector<std::shared_ptr<Scene>>& GetScenes() const 
+	{ return _scenes; }
 
 private:
 	void HandleEvent(const sf::Event::KeyPressed& event);

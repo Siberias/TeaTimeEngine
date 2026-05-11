@@ -1,4 +1,6 @@
-﻿cmake_minimum_required (VERSION 3.10)
+﻿cmake_minimum_required (VERSION 3.27)
+
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -8,8 +10,21 @@ endif()
 
 project ("SFML3Template")
 
-# Add SFML Library
+# Libraries
 include(FetchContent)
+
+FetchContent_Declare(json 
+    URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(
+    plog
+    GIT_REPOSITORY https://github.com/SergiusTheBest/plog
+    GIT_TAG        1.1.10
+    GIT_SHALLOW    true
+)
+FetchContent_MakeAvailable(plog)
+
 FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 3.0.2
@@ -20,11 +35,17 @@ FetchContent_MakeAvailable(SFML)
 
 # Setup project files
 include_directories("Include")
-set(SOURCES "Source/Application.cpp" "Source/Main.cpp")
+
+set(SOURCES "Source/Application.cpp" "Source/Main.cpp" "Source/Scene.cpp" 
+    "Source/SceneLoader.cpp")
 add_executable(SFML3Template ${SOURCES})
+add_subdirectory("Source/Services")
 
 target_compile_features(SFML3Template PRIVATE cxx_std_20)
-target_link_libraries(SFML3Template PRIVATE SFML::Graphics)
+target_link_libraries(SFML3Template PRIVATE nlohmann_json::nlohmann_json plog::plog 
+    SFML::Graphics)
 
-set_property(TARGET SFML3Template PROPERTY DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SFML3Template)
+set_property(TARGET SFML3Template PROPERTY DEBUGGER_WORKING_DIRECTORY 
+    "${CMAKE_SOURCE_DIR}")
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT 
+    SFML3Template)
