@@ -1,0 +1,17 @@
+[
+  {
+    "class": "TextEntity",
+    "data": {
+      "position": {
+        "x": 400,
+        "y": 300
+      },
+      "size": {
+        "x": 600,
+        "y": 400
+      },
+      "font": "BerlinSansRegular",
+      "text": "Configure your startup scene in Config/Application.json\nPress Esc to exit"
+    }
+  }
+]
