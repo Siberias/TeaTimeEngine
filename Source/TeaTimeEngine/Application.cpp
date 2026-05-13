@@ -126,13 +126,34 @@ void Application::ApplyApplicationConfig()
   std::ifstream fileStream = std::ifstream(configPath);
   Json configJson = Json::parse(fileStream);
 
-  if (configJson["startupScene"] == "")
+  if (configJson.contains("startupScene") == false || 
+    configJson["startupScene"] == "")
   {
     _startupScenePath = engineFallbackScene;
-    return;
   }
+  else
+  {
+    _startupScenePath = configJson["startupScene"];
+  }
+  
+  if (configJson.contains("window") && configJson["window"].is_object())
+  {
+    auto windowConfig = configJson["window"];
 
-  _startupScenePath = configJson["startupScene"];
+    if (windowConfig.contains("title") && windowConfig["title"].is_string())
+    {
+      std::string title = windowConfig["title"];
+      _window.setTitle(title);
+    }
+
+    if (windowConfig.contains("width") && windowConfig.contains("height") &&
+      windowConfig["width"].is_number() && windowConfig["height"].is_number())
+    {
+      unsigned int width = windowConfig["width"];
+      unsigned int height = windowConfig["height"];
+      _window.setSize({ width, height });
+    }
+  }
 }
 
 void Application::CreateAndStartServices()
