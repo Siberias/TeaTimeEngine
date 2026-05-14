@@ -11,6 +11,9 @@ A small game engine currently using the SFML framework for rendering and input h
   - Objects are constructed from the JSON data with factories
 - Particle effects
 - Text boxes
+- Event system
+  - Listeners stored as linked lists per event name
+  - Events all derive from an interface and you cast the event based on its name to read its data
 - CMake build system
 
 # Example main.cpp

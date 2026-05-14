@@ -12,6 +12,7 @@ using Json = nlohmann::json;
 #include "Services/FontService.h"
 #include "Services/ParticleEffectService.h"
 #include "Services/SceneLoaderService.h"
+#include "Services/SynchronousEventService.h"
 
 Application* Application::_instance = nullptr;
 
@@ -159,6 +160,9 @@ void Application::ApplyApplicationConfig()
 void Application::CreateAndStartServices()
 {
   _serviceLocator = std::make_shared<ServiceLocator>();
+
+  auto eventService = std::make_shared<SynchronousEventService>();
+  _serviceLocator->RegisterService<IEventService>(eventService);
 
   auto fontService = std::make_shared<FontService>();
   _serviceLocator->RegisterService<IFontService>(fontService);

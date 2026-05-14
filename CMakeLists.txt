@@ -35,6 +35,7 @@ set(SOURCES
 add_library(TeaTimeEngine ${SOURCES})
 add_library(TeaTimeEngine::TeaTimeEngine ALIAS TeaTimeEngine)
 
+include_directories("Include")
 include_directories("Include/TeaTimeEngine")
 target_include_directories(TeaTimeEngine PUBLIC "Include")
 

@@ -8,7 +8,7 @@
 
 class TextEntity : public IGameEntity
 {
-private:
+protected:
   sf::Text _sfText;
 
 public:

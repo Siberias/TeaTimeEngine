@@ -3,4 +3,5 @@ target_sources(TeaTimeEngine PRIVATE
   "ParticleEffectService.cpp" 
   "SceneLoaderService.cpp"
   "ServiceLocator.cpp"
+  "SynchronousEventService.cpp"
 )
