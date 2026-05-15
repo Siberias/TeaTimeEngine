@@ -74,14 +74,22 @@ void Scene::Update(const float dt)
 
   for (auto& gameEntity : _destroyedGameEntities)
   {
-    size_t originalSize = _gameEntities.size();
     auto iter = std::remove(_gameEntities.begin(), _gameEntities.end(),
       gameEntity);
     if (iter != _gameEntities.end())
     {
       gameEntity->Destroy();
       _gameEntities.erase(iter, _gameEntities.end());
-      _disabledGameEntities.erase(iter, _gameEntities.end());
+    }
+    else
+    {
+      iter = std::remove(_disabledGameEntities.begin(), _disabledGameEntities.end(),
+        gameEntity);
+      if (iter != _disabledGameEntities.end())
+      {
+        gameEntity->Destroy();
+        _disabledGameEntities.erase(iter, _disabledGameEntities.end());
+      }
     }
   }
   _destroyedGameEntities.clear();
