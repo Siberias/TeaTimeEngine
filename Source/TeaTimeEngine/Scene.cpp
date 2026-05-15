@@ -46,10 +46,31 @@ void Scene::Update(const float dt)
   }
   _unstartedGameEntities.clear();
 
+  for (auto& gameEntity : _disabledGameEntities)
+  {
+    if (gameEntity->GetIsEnabled())
+    {
+      _gameEntities.push_back(gameEntity);
+    }
+  }
+  std::erase_if(_disabledGameEntities, [](IGameEntityPtr gameEntity) {
+    return gameEntity->GetIsEnabled();
+  });
+
   for (auto& gameEntity : _gameEntities)
   {
-    gameEntity->Update(dt);
+    if (gameEntity->GetIsEnabled() == false)
+    {
+      _disabledGameEntities.push_back(gameEntity);
+    }
+    else
+    {
+      gameEntity->Update(dt);
+    }
   }
+  std::erase_if(_gameEntities, [](IGameEntityPtr gameEntity) {
+    return gameEntity->GetIsEnabled() == false;
+  });
 
   for (auto& gameEntity : _destroyedGameEntities)
   {
@@ -60,6 +81,7 @@ void Scene::Update(const float dt)
     {
       gameEntity->Destroy();
       _gameEntities.erase(iter, _gameEntities.end());
+      _disabledGameEntities.erase(iter, _gameEntities.end());
     }
   }
   _destroyedGameEntities.clear();
@@ -75,11 +97,17 @@ void Scene::Render(sf::RenderWindow& window)
 
 void Scene::Destroy()
 {
+  for (auto& gameEntity : _disabledGameEntities)
+  {
+    gameEntity->Destroy();
+  }
+
   for (auto& gameEntity : _gameEntities)
   {
     gameEntity->Destroy();
   }
 
   _gameEntities.clear();
+  _disabledGameEntities.clear();
   _unstartedGameEntities.clear();
 }

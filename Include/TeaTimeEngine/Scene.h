@@ -10,6 +10,7 @@ class Scene
 {
 private:
   std::vector<IGameEntityPtr> _gameEntities;
+  std::vector<IGameEntityPtr> _disabledGameEntities;
   std::vector<IGameEntityPtr> _unstartedGameEntities;
   std::vector<IGameEntityPtr> _destroyedGameEntities;
 

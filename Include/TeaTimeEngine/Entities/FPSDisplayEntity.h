@@ -6,6 +6,8 @@
 
 class FPSDisplayEntity : public TextEntity
 {
+  IGAMEENTITY_DECLARATION();
+
 private:
   sf::Clock _clock;
   std::array<float, 60> _fpsHistory{};

@@ -37,7 +37,7 @@ IGameEntityPtr TextEntityFactory::Create(const Json& data)
   }
 
   auto textEntity = std::make_shared<TextEntity>(font, text);
-  IGameEntityFactory::ParseAndSetCommonParams(textEntity, data);
+  IGAMEENTITYFACTORY_SET_COMMON_PARAMS(textEntity, data);
   return textEntity;
 }
 
@@ -64,6 +64,6 @@ IGameEntityPtr FPSDisplayEntityFactory::Create(const Json& data)
   const sf::Font& font = fontService->GetFont(fontName);
 
   auto fpsDisplayEntity = std::make_shared<FPSDisplayEntity>(font, "");
-  IGameEntityFactory::ParseAndSetCommonParams(fpsDisplayEntity, data);
+  IGAMEENTITYFACTORY_SET_COMMON_PARAMS(fpsDisplayEntity, data);
   return fpsDisplayEntity;
 }

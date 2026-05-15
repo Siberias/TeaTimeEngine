@@ -8,6 +8,8 @@
 
 class TextEntity : public IGameEntity
 {
+  IGAMEENTITY_DECLARATION();
+
 protected:
   sf::Text _sfText;
 
