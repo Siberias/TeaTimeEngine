@@ -27,7 +27,6 @@ Application::Application() :
 
   _instance = this;
 
-  _window.setVerticalSyncEnabled(true);
   _window.setKeyRepeatEnabled(false);
 }
 
@@ -116,7 +115,8 @@ void Application::HandleEvent(const sf::Event::Closed& event)
 void Application::ApplyApplicationConfig()
 {
   const std::string configPath = "Config/Application.json";
-  const std::string engineFallbackScene = "Assets/Scenes/EngineFallbackScene.json";
+  const std::string engineFallbackScene = 
+    "Assets/Scenes/EngineFallbackScene.json";
 
   if (!std::filesystem::exists(configPath))
   {
@@ -139,7 +139,7 @@ void Application::ApplyApplicationConfig()
   
   if (configJson.contains("window") && configJson["window"].is_object())
   {
-    auto windowConfig = configJson["window"];
+    auto& windowConfig = configJson["window"];
 
     if (windowConfig.contains("title") && windowConfig["title"].is_string())
     {
@@ -153,6 +153,12 @@ void Application::ApplyApplicationConfig()
       unsigned int width = windowConfig["width"];
       unsigned int height = windowConfig["height"];
       _window.setSize({ width, height });
+    }
+
+    if (windowConfig.contains("vsync") && windowConfig["vsync"].is_boolean())
+    {
+      bool vsync = windowConfig["vsync"];
+      _window.setVerticalSyncEnabled(vsync);
     }
   }
 }
@@ -177,4 +183,6 @@ void Application::CreateAndStartServices()
   fontService->LoadFonts();
   sceneLoaderService->RegisterGameEntityFactory("TextEntity",
     std::make_shared<TextEntityFactory>());
+  sceneLoaderService->RegisterGameEntityFactory("FPSDisplayEntity",
+    std::make_shared<FPSDisplayEntityFactory>());
 }
