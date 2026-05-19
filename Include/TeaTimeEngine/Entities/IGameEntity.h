@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class IGameEntity
+class IGameEntity : public std::enable_shared_from_this<IGameEntity>
 {
 public:
   virtual ~IGameEntity() = default;
